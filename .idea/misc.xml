@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ElixirCompilerOptions">
+    <useMixCompiler>true</useMixCompiler>
+  </component>
+  <component name="MixSettings">
+    <mixPath>/usr/local/Cellar/elixir/1.3.4/bin/mix</mixPath>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" project-jdk-name="Elixir 1.9.4" project-jdk-type="Elixir SDK">
+    <output url="file://$PROJECT_DIR$/classes" />
+  </component>
+</project>

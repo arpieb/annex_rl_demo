@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="tensor" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/test/lib/tensor/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/tensor/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/tensor/lib" />
+    </SOURCES>
+  </library>
+</component>
