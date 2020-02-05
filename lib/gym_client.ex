@@ -1,42 +1,60 @@
 defmodule GymClient do
   @moduledoc ~S"""
-  Lotsa code shamelessly copied from:
-  https://medium.com/@a4word/oh-the-api-clients-youll-build-in-elixir-f9140e2acfb6
+  Quick-n-Dirty™ implementation of the relevant REST API calls for:
+  https://github.com/saravanabalagi/gym-http-server
   """
 
+  @doc ~S"""
+  Create an instance of the specified environment
+  """
   def create_env(env_id) do
     "/v1/envs/"
-    |> Myclient.Api.post(%{env_id: env_id})
+    |> GymClient.Api.post(%{env_id: env_id})
     |> (fn {200, %{instance_id: instance_id}} -> instance_id end).()
   end
 
+  @doc ~S"""
+  List all environments running on the server
+  """
   def get_envs() do
     "/v1/envs/"
-    |> Myclient.Api.get()
+    |> GymClient.Api.get()
     |> (fn {200, %{all_envs: envs}} -> envs end).()
   end
 
+  @doc ~S"""
+  Reset the state of the environment and return an initial observation.
+  """
   def reset_env(instance_id) do
     "/v1/envs/" <> instance_id <> "/reset/"
-    |> Myclient.Api.post()
+    |> GymClient.Api.post()
     |> (fn {200, %{observation: observation}} -> observation end).()
   end
 
+  @doc ~S"""
+  Step though an environment using an action
+  """
   def step(instance_id, action) do
     "/v1/envs/" <> instance_id <> "/step/"
-    |> Myclient.Api.post(%{action: action})
+    |> GymClient.Api.post(%{action: action})
     |> (fn {200, resp} -> resp end).()
   end
 
+  @doc ~S"""
+  Get information (name and dimensions/bounds) of the env's `action_space`
+  """
   def action_space(instance_id) do
     "/v1/envs/" <> instance_id <> "/action_space/"
-    |> Myclient.Api.get()
+    |> GymClient.Api.get()
     |> (fn {200, %{info: info}} -> info end).()
   end
 
+  @doc ~S"""
+  Get information (name and dimensions/bounds) of the env's `observation_space`
+  """
   def observation_space(instance_id) do
     "/v1/envs/" <> instance_id <> "/observation_space/"
-    |> Myclient.Api.get()
+    |> GymClient.Api.get()
     |> (fn {200, %{info: info}} -> info end).()
   end
 

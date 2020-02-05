@@ -1,4 +1,4 @@
-defmodule Myclient.Api do
+defmodule GymClient.Api do
   @moduledoc ~S"""
   Lotsa code shamelessly copied from:
   https://medium.com/@a4word/oh-the-api-clients-youll-build-in-elixir-f9140e2acfb6
