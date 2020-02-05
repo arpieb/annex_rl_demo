@@ -34,9 +34,9 @@ defmodule GymClient do
   @doc ~S"""
   Step though an environment using an action
   """
-  def step(instance_id, action) do
+  def step(instance_id, action, render \\ true) do
     "/v1/envs/" <> instance_id <> "/step/"
-    |> GymClient.Api.post(%{action: action})
+    |> GymClient.Api.post(%{action: action, render: render})
     |> (fn {200, resp} -> resp end).()
   end
 
