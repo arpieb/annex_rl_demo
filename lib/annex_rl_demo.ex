@@ -9,6 +9,7 @@ defmodule AnnexRlDemo do
     env = create_env("CartPole-v1")
     obs = reset_env(env)
     action_space = action_space(env) |> Map.get(:n)
+    obs_space = GymClient.observation_space(env) |> Map.fetch!(:shape) |> hd()
     %{learner: learner, done: done, iterations_left: iters_left} = exec_action(env, nil, action_space, obs, false, max_iterations)
     IO.puts("done: " <> Atom.to_string(done) <> ", iterations: " <> Integer.to_string(max_iterations - iters_left))
   end

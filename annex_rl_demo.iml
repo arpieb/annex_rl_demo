@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/annex" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/certifi" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/coerce" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/deque" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/extractable" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/hackney" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/httpoison" />
@@ -91,5 +92,7 @@
     <orderEntry type="library" name="inch_ex" level="project" />
     <orderEntry type="library" name="unicode_util_compat" level="project" />
     <orderEntry type="library" name="parse_trans" level="project" />
+    <orderEntry type="library" name="deque" level="project" />
+    <orderEntry type="library" name="benchfella" level="project" />
   </component>
 </module>

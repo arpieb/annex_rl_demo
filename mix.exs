@@ -26,6 +26,7 @@ defmodule AnnexRlDemo.MixProject do
       {:annex, "~> 0.2.0"},
       {:httpoison, "~> 1.6"},
       {:poison, "~> 4.0"},
+      {:deque, "~> 1.2"},
     ]
   end
 end
