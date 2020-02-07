@@ -94,5 +94,6 @@
     <orderEntry type="library" name="parse_trans" level="project" />
     <orderEntry type="library" name="deque" level="project" />
     <orderEntry type="library" name="benchfella" level="project" />
+    <orderEntry type="library" name="benchfella" level="project" />
   </component>
 </module>

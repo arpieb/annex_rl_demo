@@ -24,4 +24,5 @@ annex_rl_demo-*.tar
 
 # Project-specific cruft
 ENV
-.idea
+.idea/
+*.iml

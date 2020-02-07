@@ -24,22 +24,20 @@ defmodule GymAgent do
   def querysetstate(agent, s) do
     agent = agent
     |> struct(s: s)
-    |> get_action(s)
+    |> update_action(s)
     |> decay_eps()
-
-    {agent, agent.a}
   end
 
-  defp get_action(agent = %GymAgent{fit: true}, s) do
-    get_random_action(agent)
+  defp update_action(agent = %GymAgent{fit: false}, s) do
+    struct(agent, a: get_random_action(agent))
   end
 
-  defp get_action(agent, s) do
-    cond do
+  defp update_action(agent, s) do
+    a = cond do
       :rand.uniform_real() <= agent.eps -> get_random_action(agent)
       true -> get_learned_action(agent, s)
     end
-    get_random_action(agent)
+    struct(agent, a: a)
   end
 
   defp get_learned_action(agent, s) do
@@ -54,6 +52,7 @@ defmodule GymAgent do
     eps = agent.eps * agent.eps_decay
     struct(agent, eps: eps)
   end
+
   defp decay_eps(agent), do: agent
 
 end
