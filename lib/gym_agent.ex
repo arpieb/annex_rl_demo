@@ -25,6 +25,7 @@ defmodule GymAgent do
     agent = agent
     |> struct(s: s)
     |> update_action(s)
+    |> update_fit()
     |> decay_eps()
   end
 
@@ -54,5 +55,12 @@ defmodule GymAgent do
   end
 
   defp decay_eps(agent), do: agent
+
+  defp update_fit(agent = %GymAgent{fit: false}) do
+    fit = Enum.count(agent.history) >= @history_size_min
+    struct(agent, fit: fit)
+  end
+
+  defp update_fit(agent), do: agent
 
 end
