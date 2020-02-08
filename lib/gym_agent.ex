@@ -2,15 +2,21 @@ defmodule GymAgent do
   @moduledoc false
 
   alias GymAgent.Experience
+  alias Annex.{
+    Data.List1D,
+    Dataset,
+    Layer.Sequence,
+    Utils
+    }
 
   @batch_size 10
   @history_size_min 1_000
   @history_size_max 1_000_000
 
-  defstruct [:num_actions, :num_states, :gamma, :eps, :eps_decay, :q, :fit, :trained, :history, :s, :a]
+  defstruct [:num_actions, :num_states, :gamma, :eps, :eps_decay, :learner, :fit, :trained, :history, :s, :a]
 
   def new(opts \\ []) do
-    %GymAgent{}
+    agent = %GymAgent{}
     # Default overridable options
     |> struct(gamma: 0.99)
     |> struct(eps: 0.25)
@@ -21,6 +27,22 @@ defmodule GymAgent do
     |> struct(fit: false)
     |> struct(trained: false)
     |> struct(history: Deque.new(@history_size_min))
+
+    # Continue updating agent based on initialization params
+    agent
+    |> struct(learner: create_learner(agent))
+  end
+
+  def create_learner(agent) do
+    hidden_size = agent.num_states * 20
+    learner = Annex.sequence([
+      Annex.dense(hidden_size, agent.num_states),
+      Annex.activation(:relu),
+      Annex.dense(hidden_size, hidden_size),
+      Annex.activation(:relu),
+      Annex.dense(agent.num_actions, hidden_size),
+      Annex.activation(:relu)
+    ])
   end
 
   def querysetstate(agent, s) do
