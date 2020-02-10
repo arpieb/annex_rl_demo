@@ -4,8 +4,8 @@ defmodule GymAgent do
   alias GymAgent.Experience
 
   @batch_size 10
-  @history_size_min 100 #1_000
-  @history_size_max 100_000 #1_000_000
+  @history_size_min 1_000
+  @history_size_max 1_000_000
 
   defstruct [:num_actions, :num_states, :gamma, :eps, :eps_decay, :learner, :fit, :trained, :history, :s, :a]
 
@@ -14,7 +14,7 @@ defmodule GymAgent do
     # Default overridable options
     |> struct(gamma: 0.99)
     |> struct(eps: 0.25)
-    |> struct(eps_decay: 0.99)
+    |> struct(eps_decay: 0.995)
     |> struct(opts)
 
     # Default internal items
@@ -88,14 +88,14 @@ defmodule GymAgent do
             agent.learner,
             samples,
             name: :gym_agent,
-            learning_rate: 0.001,
+#            learning_rate: 0.001,
             halt_condition: {:epochs, 1}
           )
 
           agent
           |> struct(learner: learner)
           |> struct(fit: fit)
-          |> IO.inspect()
+#          |> IO.inspect()
       _ -> agent
     end
   end
