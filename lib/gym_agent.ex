@@ -2,16 +2,10 @@ defmodule GymAgent do
   @moduledoc false
 
   alias GymAgent.Experience
-  alias Annex.{
-    Data.List1D,
-    Dataset,
-    Layer.Sequence,
-    Utils
-    }
 
   @batch_size 10
-  @history_size_min 1_000
-  @history_size_max 1_000_000
+  @history_size_min 100 #1_000
+  @history_size_max 100_000 #1_000_000
 
   defstruct [:num_actions, :num_states, :gamma, :eps, :eps_decay, :learner, :fit, :trained, :history, :s, :a]
 
@@ -26,7 +20,7 @@ defmodule GymAgent do
     # Default internal items
     |> struct(fit: false)
     |> struct(trained: false)
-    |> struct(history: Deque.new(@history_size_min))
+    |> struct(history: Deque.new(@history_size_max))
 
     # Continue updating agent based on initialization params
     agent
@@ -35,21 +29,21 @@ defmodule GymAgent do
 
   def create_learner(agent) do
     hidden_size = agent.num_states * 20
-    learner = Annex.sequence([
+    Annex.sequence([
       Annex.dense(hidden_size, agent.num_states),
-      Annex.activation(:relu),
+      Annex.activation(:tanh),
       Annex.dense(hidden_size, hidden_size),
-      Annex.activation(:relu),
+      Annex.activation(:tanh),
       Annex.dense(agent.num_actions, hidden_size),
-      Annex.activation(:relu)
+      Annex.activation(:sigmoid)
     ])
+#    |> IO.inspect()
   end
 
   def querysetstate(agent, s) do
     agent
     |> update_state(s)
     |> update_action(get_action(agent, s))
-    |> update_fit()
     |> decay_eps()
   end
 
@@ -81,50 +75,86 @@ defmodule GymAgent do
     struct(agent, history: Deque.append(agent.history, xp))
   end
 
-  def train(agent) do
-    agent # TODO
+  def train(%GymAgent{trained: true} = agent), do: agent
+
+  def train(%GymAgent{trained: false} = agent) do
+    fit = Enum.count(agent.history) >= @history_size_min
+    case fit do
+      true ->
+          samples = Enum.take_random(agent.history, @batch_size)
+          |> gen_data_labels(agent)
+
+          {learner, _output} = Annex.train(
+            agent.learner,
+            samples,
+            name: :gym_agent,
+            learning_rate: 0.001,
+            halt_condition: {:epochs, 1}
+          )
+
+          agent
+          |> struct(learner: learner)
+          |> struct(fit: fit)
+          |> IO.inspect()
+      _ -> agent
+    end
   end
 
-  def get_action(agent = %GymAgent{fit: false}, s) do
+  def train(agent), do: agent
+
+  def gen_data_labels([], _), do: []
+
+  def gen_data_labels([xp | samples], agent) do
+    data = xp.s
+    v = get_values(agent, xp.s) #|> IO.inspect()
+    vr = cond do
+      xp.done -> 0.0
+      true -> xp.r + (agent.gamma * Enum.max(get_values(agent, xp.s_prime)))
+    end
+    labels = List.replace_at(v, xp.a, vr) #|> IO.inspect()
+
+    [{data, labels} | gen_data_labels(samples, agent)]
+  end
+
+  def get_action(%GymAgent{fit: false} = agent, _s) do
     get_random_action(agent)
   end
 
-  def get_action(agent, s) do
-    a = cond do
+  def get_action(%GymAgent{fit: true} = agent, s) do
+    cond do
       :rand.uniform_real() <= agent.eps -> get_random_action(agent)
       true -> get_learned_action(agent, s)
     end
   end
 
   def get_learned_action(agent, s) do
-    get_random_action(agent) # TODO
+    get_values(agent, s) |> argmax() |> elem(1)
   end
 
   def get_random_action(agent) do
     :rand.uniform(agent.num_actions) - 1
   end
 
-  def decay_eps(agent = %GymAgent{fit: true}) do
+  def decay_eps(%GymAgent{fit: true} = agent) do
     eps = agent.eps * agent.eps_decay
     struct(agent, eps: eps)
   end
 
-  def decay_eps(agent), do: agent
+  def decay_eps(%GymAgent{fit: false} = agent), do: agent
 
-  def update_fit(agent = %GymAgent{fit: false}) do
-    fit = Enum.count(agent.history) >= @history_size_min
-    struct(agent, fit: fit)
+  def get_values(%GymAgent{fit: false} = agent, _s) do
+    for _ <- 1..agent.num_actions, do: :rand.uniform()
   end
 
-  def update_fit(agent), do: agent
-
-  def get_values(agent = %GymAgent{fit: false}, s) do
-    actions = for _ <- 1..agent.num_actions, do: :rand.uniform()
+  def get_values(%GymAgent{fit: true} = agent, s) do
+    Annex.predict(agent.learner, s)
   end
 
-  def get_values(agent, s) do
-    # TODO add query of learner instead
-    actions = for _ <- 1..agent.num_actions, do: :rand.uniform()
+  def argmax(values) do
+    red_values = values |> Enum.with_index()
+    red_values |> Enum.reduce(hd(red_values), &reduce_argmax/2)
   end
+
+  defp reduce_argmax({val, idx}, {acc_val, acc_idx}), do: if (val > acc_val), do: {val, idx}, else: {acc_val, acc_idx}
 
 end
