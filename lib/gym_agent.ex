@@ -78,6 +78,8 @@ defmodule GymAgent do
     fit = Enum.count(agent.history) >= @history_size_min
     case fit do
       true ->
+          IO.puts("Training")
+          IO.inspect(agent.learner)
           samples = Enum.take_random(agent.history, @batch_size)
           |> gen_data_labels(agent)
 

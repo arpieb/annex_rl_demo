@@ -27,7 +27,7 @@ defmodule AnnexRlDemo.MixProject do
       {:httpoison, "~> 1.6"},
       {:poison, "~> 4.0"},
       {:deque, "~> 1.2"},
-      {:annex_matrex, git: "https://github.com/elbow-jason/annex_matrex.git", tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"},
+#      {:annex_matrex, git: "https://github.com/elbow-jason/annex_matrex.git", tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"},
     ]
   end
 end
