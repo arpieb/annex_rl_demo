@@ -4,20 +4,17 @@ defmodule GymAgent do
   alias GymAgent.Experience
 
   @batch_size 10
-  @history_size_min 1_000
+  @history_size_min 100
   @history_size_max 1_000_000
 
-  defstruct [:num_actions, :num_states, :gamma, :eps, :eps_decay, :learner, :fit, :trained, :history, :s, :a]
+  defstruct num_actions: 0, num_states: 0, gamma: 0.99, eps: 0.25, eps_decay: 0.99, learner: nil, fit: false, trained: false, history: nil, s: nil, a: nil
 
   def new(opts \\ []) do
     agent = %GymAgent{}
     # Default overridable options
-    |> struct(gamma: 0.99)
-    |> struct(eps: 0.25)
-    |> struct(eps_decay: 0.995)
     |> struct(opts)
 
-    # Default internal items
+    # Force defaults for internal items
     |> struct(fit: false)
     |> struct(trained: false)
     |> struct(history: Deque.new(@history_size_max))
@@ -35,7 +32,7 @@ defmodule GymAgent do
       Annex.dense(hidden_size, hidden_size),
       Annex.activation(:tanh),
       Annex.dense(agent.num_actions, hidden_size),
-      Annex.activation(:sigmoid)
+      Annex.activation(:tanh)
     ])
 #    |> IO.inspect()
   end
@@ -100,15 +97,13 @@ defmodule GymAgent do
     end
   end
 
-  def train(agent), do: agent
-
   def gen_data_labels([], _), do: []
 
   def gen_data_labels([xp | samples], agent) do
     data = xp.s
     v = get_values(agent, xp.s) #|> IO.inspect()
     vr = cond do
-      xp.done -> 0.0
+      xp.done -> xp.r
       true -> xp.r + (agent.gamma * Enum.max(get_values(agent, xp.s_prime)))
     end
     labels = List.replace_at(v, xp.a, vr) #|> IO.inspect()
@@ -128,7 +123,7 @@ defmodule GymAgent do
   end
 
   def get_learned_action(agent, s) do
-    get_values(agent, s) |> argmax() |> elem(1)
+    get_values(agent, s) |> argmax()
   end
 
   def get_random_action(agent) do
@@ -152,7 +147,7 @@ defmodule GymAgent do
 
   def argmax(values) do
     red_values = values |> Enum.with_index()
-    red_values |> Enum.reduce(hd(red_values), &reduce_argmax/2)
+    red_values |> Enum.reduce(hd(red_values), &reduce_argmax/2) |> elem(1)
   end
 
   defp reduce_argmax({val, idx}, {acc_val, acc_idx}), do: if (val > acc_val), do: {val, idx}, else: {acc_val, acc_idx}
