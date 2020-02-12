@@ -1,6 +1,6 @@
 # AnnexRlDemo
 
-Annex RL demo for Elixir |> Atlanta Meetup 2020-02-12
+Annex RL demo for Elixir |> Atlanta Meetup 2020-02-12.  Originally published at [arpieb/annex_rl_demo](https://github.com/arpieb/annex_rl_demo/).
 
 Attempt to port an OpenAI Gym Reinforcement Agent from Scikit-learn to Annex
 
@@ -28,8 +28,6 @@ Once the server is up and running on your local (so you can see the agent playin
 The usual suspects: clone, get deps, run:
 
 ```bash
-git clone https://github.com/arpieb/annex_rl_demo.git
-cd annex_rl_demo
 mix deps.get
 mix run -e "AnnexRlDemo.run()"
 ```
