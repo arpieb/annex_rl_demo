@@ -8,11 +8,11 @@ defmodule AnnexRlDemo do
   @max_episodes 5000
 
   def run() do
-#    env = create_env("CartPole-v1")
-    env = create_env("LunarLander-v2")
+    env = create_env("CartPole-v1")
+#    env = create_env("LunarLander-v2")
     num_actions = action_space(env) |> IO.inspect() |> Map.get(:n)
-    num_states = 8 #GymClient.observation_space(env) |> IO.inspect() |> Map.fetch!(:shape) |> hd()
-    agent = GymAgent.new(num_states: num_states, num_actions: num_actions, eps: 0.25, eps_decay: 0.99, gamma: 0.99)
+    num_states = GymClient.observation_space(env) |> IO.inspect() |> Map.fetch!(:shape) |> hd()
+    agent = GymAgent.new(num_states: num_states, num_actions: num_actions, eps: 0.0, eps_decay: 0.995, gamma: 0.99)
 #    exit(:normal)
     run_experiment(agent, env, @max_episodes)
   end
