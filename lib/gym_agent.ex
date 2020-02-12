@@ -5,7 +5,7 @@ defmodule GymAgent do
 
   @batch_size 10
   @history_size_min 100
-  @history_size_max 1000
+  @history_size_max 10_000
 
   defstruct num_actions: 0, num_states: 0, gamma: 0.99, eps: 0.25, eps_decay: 0.99, learner: nil, fit: false, trained: false, history: nil, s: nil, a: nil
 
