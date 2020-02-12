@@ -23,10 +23,12 @@ defmodule AnnexRlDemo.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-      {:annex, "~> 0.2.0"},
       {:httpoison, "~> 1.6"},
       {:poison, "~> 4.0"},
       {:deque, "~> 1.2"},
+
+      {:annex, git: "https://github.com/arpieb/annex.git", branch: "add-linear-activation", override: true},
+#      {:annex, "~> 0.2.0"},
 #      {:annex_matrex, git: "https://github.com/elbow-jason/annex_matrex.git", tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"},
     ]
   end

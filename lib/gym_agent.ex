@@ -4,8 +4,8 @@ defmodule GymAgent do
   alias GymAgent.Experience
 
   @batch_size 10
-  @history_size_min 100
-  @history_size_max 1_000_000
+  @history_size_min 1_000
+  @history_size_max 100_000
 
   defstruct num_actions: 0, num_states: 0, gamma: 0.99, eps: 0.25, eps_decay: 0.99, learner: nil, fit: false, trained: false, history: nil, s: nil, a: nil
 
@@ -25,14 +25,14 @@ defmodule GymAgent do
   end
 
   def create_learner(agent) do
-    hidden_size = agent.num_states * 20
+    hidden_size = agent.num_states
     Annex.sequence([
       Annex.dense(hidden_size, agent.num_states),
       Annex.activation(:tanh),
       Annex.dense(hidden_size, hidden_size),
       Annex.activation(:tanh),
       Annex.dense(agent.num_actions, hidden_size),
-      Annex.activation(:tanh)
+      Annex.activation(:linear)
     ])
 #    |> IO.inspect()
   end
@@ -78,23 +78,21 @@ defmodule GymAgent do
     fit = Enum.count(agent.history) >= @history_size_min
     case fit do
       true ->
-          IO.puts("Training")
-          IO.inspect(agent.learner)
           samples = Enum.take_random(agent.history, @batch_size)
+#          |> IO.inspect()
           |> gen_data_labels(agent)
 
           {learner, _output} = Annex.train(
             agent.learner,
             samples,
-            name: :gym_agent,
-#            learning_rate: 0.001,
             halt_condition: {:epochs, 1}
           )
+#          |> IO.inspect()
 
           agent
           |> struct(learner: learner)
           |> struct(fit: fit)
-#          |> IO.inspect()
+#          |> struct(trained: true)
       _ -> agent
     end
   end
@@ -102,15 +100,12 @@ defmodule GymAgent do
   def gen_data_labels([], _), do: []
 
   def gen_data_labels([xp | samples], agent) do
-    data = xp.s
+    data = xp.s #|> IO.inspect()
     v = get_values(agent, xp.s) #|> IO.inspect()
-    vr = cond do
-      xp.done -> xp.r
-      true -> xp.r + (agent.gamma * Enum.max(get_values(agent, xp.s_prime)))
-    end
+    vr = if xp.done, do: xp.r, else: (xp.r + (agent.gamma * Enum.max(get_values(agent, xp.s_prime))))
     labels = List.replace_at(v, xp.a, vr) #|> IO.inspect()
-
-    [{data, labels} | gen_data_labels(samples, agent)]
+    xy = {data, labels} #|> IO.inspect()
+    [xy | gen_data_labels(samples, agent)]
   end
 
   def get_action(%GymAgent{fit: false} = agent, _s) do
@@ -125,7 +120,13 @@ defmodule GymAgent do
   end
 
   def get_learned_action(agent, s) do
-    get_values(agent, s) |> argmax()
+#    IO.puts("get_learned_action")
+#    IO.inspect(s)
+    get_values(agent, s)
+#    |> IO.inspect()
+    |> argmax()
+#    |> IO.inspect()
+#    exit(:normal)
   end
 
   def get_random_action(agent) do
@@ -140,10 +141,12 @@ defmodule GymAgent do
   def decay_eps(%GymAgent{fit: false} = agent), do: agent
 
   def get_values(%GymAgent{fit: false} = agent, _s) do
+#    IO.puts("get_values(%GymAgent{fit: false} = agent, _s)")
     for _ <- 1..agent.num_actions, do: :rand.uniform()
   end
 
   def get_values(%GymAgent{fit: true} = agent, s) do
+#    IO.puts("get_values(%GymAgent{fit: true} = agent, s)")
     Annex.predict(agent.learner, s)
   end
 

@@ -1,4 +1,5 @@
 attrs==19.3.0
+box2d-py==2.3.8
 certifi==2019.11.28
 chardet==3.0.4
 Click==7.0

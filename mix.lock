@@ -1,5 +1,5 @@
 %{
-  "annex": {:hex, :annex, "0.2.0", "ef4696b665876d041a7bcf09e1a989d5feb87a46593e58c8587330d8e839aa89", [:mix], [{:map_array, "~> 0.1.0", [hex: :map_array, repo: "hexpm", optional: false]}, {:mox, "~> 0.5.0", [hex: :mox, repo: "hexpm", optional: false]}, {:tensor, "~> 2.1", [hex: :tensor, repo: "hexpm", optional: false]}], "hexpm", "abd9175e4956b245827a6410c14e47e96baa6746517ac40c00da462f1271e109"},
+  "annex": {:git, "https://github.com/arpieb/annex.git", "471ea8c4e17cf2e776b7ed7274db8f7242e09a4a", [branch: "add-linear-activation"]},
   "annex_matrex": {:git, "https://github.com/elbow-jason/annex_matrex.git", "360fc3e499592ca4caf6c5cded4b42bc554e86b6", [tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"]},
   "annex_matrix": {:git, "https://github.com/elbow-jason/annex_matrex.git", "360fc3e499592ca4caf6c5cded4b42bc554e86b6", [tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"]},
   "certifi": {:hex, :certifi, "2.5.1", "867ce347f7c7d78563450a18a6a28a8090331e77fa02380b4a21962a65d36ee5", [:rebar3], [{:parse_trans, "~>3.3", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm", "805abd97539caf89ec6d4732c91e62ba9da0cda51ac462380bbd28ee697a8c42"},
