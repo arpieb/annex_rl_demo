@@ -27,7 +27,7 @@ defmodule AnnexRlDemo.MixProject do
       {:poison, "~> 4.0"},
       {:deque, "~> 1.2"},
 
-      {:annex, git: "https://github.com/arpieb/annex.git", branch: "add-linear-activation", override: true},
+      {:annex, git: "https://github.com/elbow-jason/annex.git", tag: "6f472a30361bf0a1646e256d6dfe478706427f64", override: true},
 #      {:annex, "~> 0.2.0"},
       {:annex_matrex, git: "https://github.com/elbow-jason/annex_matrex.git", tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"},
     ]

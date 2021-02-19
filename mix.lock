@@ -1,5 +1,5 @@
 %{
-  "annex": {:git, "https://github.com/arpieb/annex.git", "471ea8c4e17cf2e776b7ed7274db8f7242e09a4a", [branch: "add-linear-activation"]},
+  "annex": {:git, "https://github.com/elbow-jason/annex.git", "6f472a30361bf0a1646e256d6dfe478706427f64", [tag: "6f472a30361bf0a1646e256d6dfe478706427f64"]},
   "annex_matrex": {:git, "https://github.com/elbow-jason/annex_matrex.git", "360fc3e499592ca4caf6c5cded4b42bc554e86b6", [tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"]},
   "annex_matrix": {:git, "https://github.com/elbow-jason/annex_matrex.git", "360fc3e499592ca4caf6c5cded4b42bc554e86b6", [tag: "360fc3e499592ca4caf6c5cded4b42bc554e86b6"]},
   "certifi": {:hex, :certifi, "2.5.1", "867ce347f7c7d78563450a18a6a28a8090331e77fa02380b4a21962a65d36ee5", [:rebar3], [{:parse_trans, "~>3.3", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm", "805abd97539caf89ec6d4732c91e62ba9da0cda51ac462380bbd28ee697a8c42"},

@@ -26,3 +26,10 @@ annex_rl_demo-*.tar
 ENV
 .idea/
 *.iml
+
+# Python venv
+ENV
+.env
+venv
+.ENV
+.venv
